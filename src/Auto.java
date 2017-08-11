@@ -143,15 +143,16 @@ public class Auto
 	}
 	
 	@Test
-	public void LogoutTest() throws IOException
+	public void LogoutTest() throws IOException 
 	{	
 		webDriver.navigate().to("http://www.autotrader.co.uk/");
 		auto.SignInButton.click();
 		take(webDriver,"screen5");
 		auto.emailLogin.sendKeys(email);
 		auto.passwordLogin.sendKeys(password);
+		auto.SignInNowButton.click();
 		take(webDriver,"screen6");
-		auto.accountHover.click();
+		builder.moveToElement(auto.accountHover).perform();
 		auto.signOut.click();
 		take(webDriver,"screen7");
 		test.log(Status.INFO, "Logout Test");
@@ -163,11 +164,35 @@ public class Auto
 	}
 	
 	
-	@Ignore
+	@Ignore //incomplete
 	public void carSearchTest() throws IOException
 	{	
+		spreadData.clear();
 		webDriver.navigate().to("http://www.autotrader.co.uk/");
-		auto.postcode.sendKeys("");
+		
+		
+		spreadData.addAll(reader1.readRow(1, "search")); 	
+		String postcode = spreadData.get(0);
+		
+//		System.out.println(auto.distanceSelect.getText()); only have half an hour left, wont be able to setup selectors for each field with so will have a hardcoded search for now
+//		String distance = spreadData.get(1);
+		
+		auto.postcode.sendKeys(postcode);
+		
+		builder.moveToElement(auto.distanceSelect).perform(); //need to see examples of hover menu manipulation
+		builder.click(auto.distanceSelect).perform();
+		wait1("#radius > option:nth-child(4)");
+		builder.moveToElement(auto.distanceActual).perform();
+		builder.click(auto.distanceActual).perform();
+//		auto.makeSelect.sendKeys("bb");
+//		
+//		auto.model.click();
+//		auto.model.sendKeys("3");
+//		
+//		builder.moveToElement(auto.minCost).perform();
+//		builder.click().perform();
+//		builder.moveToElement(auto.minCostActual).perform();
+//		builder.click();
 	}
 	
 	@Ignore
@@ -190,7 +215,7 @@ public class Auto
 		System.out.println("After class");
 	}
 	
-	public void wait1(final String css) //check if final fucks it up
+	public void wait1(final String css) 
 	{
 		
 		Wait<WebDriver> wait = new FluentWait<WebDriver>(webDriver) //global - instant in before

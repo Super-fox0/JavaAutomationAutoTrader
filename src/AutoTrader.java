@@ -44,8 +44,10 @@ public class AutoTrader
 	@FindBy(id= "postcode")
 	WebElement postcode; 
 	
-	@FindBy(css= "#radius > option:nth-child(4)")
+	@FindBy(css= "#radius")
 	WebElement distanceSelect; 
+	@FindBy(css= "#radius > option:nth-child(4)")
+	WebElement distanceActual;
 	
 	@FindBy(css= "#searchVehiclesMake > option:nth-child(13)")
 	WebElement makeSelect; 
@@ -53,8 +55,10 @@ public class AutoTrader
 	@FindBy(css= "#searchVehiclesModel > option:nth-child(6)")
 	WebElement model; 
 	
-	@FindBy(css= "#searchVehiclesPriceFrom > option:nth-child(3)")
+	@FindBy(css= "#searchVehiclesPriceFrom")
 	WebElement minCost; 
+	@FindBy(css= "#searchVehiclesPriceFrom > option:nth-child(5)")
+	WebElement minCostActual;
 	
 	@FindBy(css= "#searchVehiclesPriceTo > option:nth-child(21)")
 	WebElement maxCost; 
