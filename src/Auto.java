@@ -43,11 +43,17 @@ public class Auto
 	
 	Actions builder = new Actions(webDriver);
 	
-	private static ExtentReports report; private ExtentTest test; private static String reportFilePath = "report.html";
+	private static ExtentReports report; private ExtentTest test; 
+	private static String reportFilePath = "report.html";
 	
-	private static SpreadSheetReader reader1; ArrayList<String> spreadData = new ArrayList<String>();
+	private static SpreadSheetReader reader1; 
+	static ArrayList<String> spreadData = new ArrayList<String>();
 	
-	private String nameBuilder= "Test "; private static int testNo = 1;
+	private String nameBuilder= "Test "; 
+	private static int testNo = 1;
+	
+	static String email = "";
+	static String password = "";
 	
 	@BeforeClass
 	public static void setUp()
@@ -60,13 +66,17 @@ public class Auto
         
         report.attachReporter(extentHtmlReporter);
        
-        reader1 = new SpreadSheetReader("C:\\Users\\Administrator\\workspace\\test2\\spread1.xlsx");
+        reader1 = new SpreadSheetReader("C:\\Users\\Administrator\\workspace\\autoTrader\\sheet1.xlsx");
 	}
 	
 	@BeforeClass
 	public static void beforeClass()
 	{
 		System.out.println("before class");	
+		
+		spreadData.addAll(reader1.readRow(1, "Input Data")); 	
+		email = spreadData.get(0);
+		password = spreadData.get(1);
 	}
 	
 	@Before
@@ -81,37 +91,83 @@ public class Auto
 	}
 	
 	@Test
-	public void test() throws IOException
+	public void SpreadSheetReadTest()
 	{
-		System.out.println("test");		
-		assertEquals(1,1);
-		
-					
-	}
-	
-	@Ignore
-	public void test2() throws IOException
-	{	
-		
-	}
-	
-	@Ignore
-	public void test3()
-	{
-		spreadData.addAll(reader1.readRow(0, "Input Data")); 
 		spreadData.addAll(reader1.readRow(1, "Input Data")); 	
-		for(String x : spreadData)
-		{
-			System.out.println(x);
-		}
+		email = spreadData.get(0);
+		password = spreadData.get(1);
+		String builder = "";
+		builder = email + " " + password;
+		System.out.println(email + " " + password);
+		
+		assertEquals(email + " " + password, builder);
 		test.log(Status.INFO, "Spreadsheet Test");
 		test.pass("Successful Spreadsheet test performed");
 	}
 	
-	@Ignore
-	public void test4() throws IOException
+	@Test
+	public void CreateAccounTest() throws IOException
+	{
+		System.out.println("test");		
+		webDriver.navigate().to("http://www.autotrader.co.uk/");
+		auto.SignInButton.click();
+		auto.SignUpButton.click();
+		auto.EmailInput.sendKeys(email);
+		auto.passwordInput.sendKeys(password);
+		take(webDriver, "screen1");
+		wait1("#social--signup--submit");
+		auto.SignupNowbutton.click();	
+		take(webDriver, "screen2");
+		test.log(Status.INFO, "Create Account Test");
+		test.pass("Successful Account Creation Performed");
+		test.addScreenCaptureFromPath("C:\\Users\\Administrator\\workspace\\autoTrader\\screen1.jpg");
+		test.addScreenCaptureFromPath("C:\\Users\\Administrator\\workspace\\autoTrader\\screen2.jpg");
+		assertEquals("signed in my account icon",auto.accountHover.getText());
+		webDriver.close();
+	}
+	
+	@Test
+	public void LoginTest() throws IOException
 	{	
-		
+		webDriver.navigate().to("http://www.autotrader.co.uk/");
+		auto.SignInButton.click();
+		take(webDriver,"screen4");
+		auto.emailLogin.sendKeys(email);
+		auto.passwordLogin.sendKeys(password);
+		take(webDriver,"screen3");
+		test.log(Status.INFO, "Login Test");
+		test.pass("Successful Login Performed");
+		test.addScreenCaptureFromPath("C:\\Users\\Administrator\\workspace\\autoTrader\\screen3.jpg");
+		test.addScreenCaptureFromPath("C:\\Users\\Administrator\\workspace\\autoTrader\\screen4.jpg");
+		webDriver.close();		
+	}
+	
+	@Test
+	public void LogoutTest() throws IOException
+	{	
+		webDriver.navigate().to("http://www.autotrader.co.uk/");
+		auto.SignInButton.click();
+		take(webDriver,"screen5");
+		auto.emailLogin.sendKeys(email);
+		auto.passwordLogin.sendKeys(password);
+		take(webDriver,"screen6");
+		auto.accountHover.click();
+		auto.signOut.click();
+		take(webDriver,"screen7");
+		test.log(Status.INFO, "Logout Test");
+		test.pass("Successful Logout Performed");
+		test.addScreenCaptureFromPath("C:\\Users\\Administrator\\workspace\\autoTrader\\screen5.jpg");
+		test.addScreenCaptureFromPath("C:\\Users\\Administrator\\workspace\\autoTrader\\screen6.jpg");
+		test.addScreenCaptureFromPath("C:\\Users\\Administrator\\workspace\\autoTrader\\screen7.jpg");
+		webDriver.close();		
+	}
+	
+	
+	@Ignore
+	public void carSearchTest() throws IOException
+	{	
+		webDriver.navigate().to("http://www.autotrader.co.uk/");
+		auto.postcode.sendKeys("");
 	}
 	
 	@Ignore
